@@ -28,36 +28,16 @@ post '/visit' do
 	@username  	= params[:username]
 	@phone  	= params[:phone]
 	@date_time 	= params[:date_time]
-	@person		= params[:person]
+	@barber		= params[:barber]
 	@color		= params[:color_picker]
 
-	hh = { :username => 'Enter your name',
-		   :phone => 'Enter your phone',
-		   :date_time => 'Enter date and time'}
 
-	hh.each do |key,value|
-		if 	params[key] == ''
-			@error = hh[key]
-			return erb :visit
-		end
-	end
+	c = Client.new
+	c.name = @username
+	c.phone = @phone
+	c.datestamp =@date_time
+	c.barber = @barber
+	c.color =@color
+	c.save
 
-	db = get_db
-	db.execute 'INSERT INTO
-	 			Users 
-	 			(
-	 				username, 
-	 				phone, 
-	 				datestamp, 
-	 				person, 
-	 				color
-	 			)
-				values(?,?,?,?,?)', [@username,@phone,@date_time,@person,@color]
-
-
-	f = File.open("./public/users.txt", "a") 
-	f.write("User: #{@username} Phone: #{@phone} Date and Time: #{@date_time} Person: #{@person} Color: #{@color}\n");
-	f.close;
-
-	erb "<h2>Thanks for visit</h2>"
 end
